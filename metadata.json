@@ -1,0 +1,6 @@
+{
+  "name": "ConditionQuest: Zero & First Conditional Academy",
+  "description": "An interactive gamified grammar quest for A2 adult EFL students mastering Zero and First Conditional sentences in classroom situations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
