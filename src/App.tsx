@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { AnimatedHeader } from './components/AnimatedHeader';
 import { GameArcade } from './components/GameArcade';
@@ -6,12 +6,15 @@ import { GrammarRulesHandbook } from './components/GrammarRulesHandbook';
 import { AudioLabView } from './components/AudioLabView';
 import { AnswerKeyView } from './components/AnswerKeyView';
 import { StudentInstructionsModal } from './components/StudentInstructionsModal';
+import { GameSelectionModal } from './components/GameSelectionModal';
 import { audioEngine } from './utils/audioEngine';
-import { Music, Volume2, VolumeX, Sparkles, BookOpen, Key, Trophy, HelpCircle } from 'lucide-react';
+import { Music, Volume2, VolumeX } from 'lucide-react';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState<'play' | 'study' | 'audio-lab' | 'answer-key'>('play');
   const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
+  const [isGameModalOpen, setIsGameModalOpen] = useState(false);
+  const [activeActivity, setActiveActivity] = useState<'sorting' | 'fill-blank'>('sorting');
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
@@ -57,6 +60,24 @@ export default function App() {
     setStreak(0);
   };
 
+  const handleSelectGameOption = (game: 'sorting' | 'fill-blank' | 'audio-lab') => {
+    if (game === 'sorting') {
+      setActiveActivity('sorting');
+      setCurrentTab('play');
+    } else if (game === 'fill-blank') {
+      setActiveActivity('fill-blank');
+      setCurrentTab('play');
+    } else if (game === 'audio-lab') {
+      setCurrentTab('audio-lab');
+    }
+    setIsGameModalOpen(false);
+
+    // Smooth scroll down to interactive stage if on play tab
+    setTimeout(() => {
+      document.getElementById('game-arena')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-teal-500 selection:text-slate-950">
       {/* Strict 3-Zone Top Navigation Bar */}
@@ -76,7 +97,7 @@ export default function App() {
         <AnimatedHeader
           onStartQuest={() => {
             audioEngine.playClick();
-            setCurrentTab('play');
+            setIsGameModalOpen(true);
           }}
           onOpenStudyGuide={() => {
             audioEngine.playClick();
@@ -92,6 +113,9 @@ export default function App() {
           <GameArcade
             score={score}
             streak={streak}
+            activeActivity={activeActivity}
+            onSelectActivity={setActiveActivity}
+            onOpenGameModal={() => setIsGameModalOpen(true)}
             onUpdateScore={handleUpdateScore}
             onIncrementStreak={handleIncrementStreak}
             onResetStreak={handleResetStreak}
@@ -106,7 +130,7 @@ export default function App() {
           <GrammarRulesHandbook
             onStartQuest={() => {
               audioEngine.playClick();
-              setCurrentTab('play');
+              setIsGameModalOpen(true);
             }}
           />
         )}
@@ -115,6 +139,13 @@ export default function App() {
 
         {currentTab === 'answer-key' && <AnswerKeyView />}
       </main>
+
+      {/* Game Options Selector Modal (Opens when user clicks Start / Empezar) */}
+      <GameSelectionModal
+        isOpen={isGameModalOpen}
+        onClose={() => setIsGameModalOpen(false)}
+        onSelectGame={handleSelectGameOption}
+      />
 
       {/* Floating Retro Sound & Music Control Bar (Bottom Right) */}
       <div className="fixed bottom-4 right-4 z-40 hidden sm:flex items-center gap-2 p-2 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-xl backdrop-blur-md">
@@ -185,7 +216,7 @@ export default function App() {
         }}
         onStartQuest={() => {
           setIsInstructionsOpen(false);
-          setCurrentTab('play');
+          setIsGameModalOpen(true);
         }}
       />
 

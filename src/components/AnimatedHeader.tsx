@@ -221,7 +221,7 @@ export const AnimatedHeader: React.FC<AnimatedHeaderProps> = ({
             className="cursor-pointer flex items-center gap-2.5 px-6 py-3 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 text-slate-950 font-bold text-sm sm:text-base shadow-lg shadow-teal-500/25 hover:shadow-teal-500/40 transition-all"
           >
             <Play className="w-5 h-5 fill-slate-950 text-slate-950" />
-            <span>Start Practice Challenges</span>
+            <span>Start Game (Choose Options)</span>
           </motion.button>
 
           <button
